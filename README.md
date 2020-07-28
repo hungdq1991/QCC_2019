@@ -1,37 +1,37 @@
 # UHF_NEW_UI
-新版R2000库使用，读写盘点数据通过回调返回
+The new version of R2000 library is used, and the reading and writing of inventory data is returned through callbacks
 
-##  导入依赖库
-**AndroidStudio** build.gradle中的dependencies中添加
+## Import dependent libraries
+**AndroidStudio** add in dependencies in build.gradle
 
 ```
-//最外层build.gradle
+//The outermost build.gradle
 allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://jitpack.io' }
-    }
+     repositories {
+         jcenter()
+         maven {url'https://jitpack.io'}
+     }
 }
 ```
 ```
- dependencies {
-    implementation 'com.github.SpeedataG:UHF:8.1.3'
-    //模块上电引用
-    implementation 'com.github.SpeedataG:Device:1.6.8'
-  }
+  dependencies {
+     implementation'com.github.SpeedataG:UHF:8.1.3'
+     //Module power-on reference
+     implementation'com.github.SpeedataG:Device:1.6.8'
+   }
 ```
-## 高温禁用说明
-* 模块温度高于75℃时禁用超高频
+## High temperature prohibition instructions
+* UHF is disabled when the module temperature is higher than 75℃
 
   
-## API文档
+## API documentation
 
-	详细的接口说明在showdoc，地址：http://www.showdoc.cc/web/#/79868361520440?page_id=452063154391852
+The detailed interface description is in showdoc, address: http://www.showdoc.cc/web/#/79868361520440?page_id=452063154391852
 
-北京思必拓科技股份有限公司
+Beijing Spirit Technology Co., Ltd.
 
-网址 http://www.speedata.cn/
+Website http://www.speedata.cn/
 
-技术支持 电话：155 4266 8023
+Technical Support Tel: 155 4266 8023
 
-QQ：2480737278
+QQ: 2480737278
