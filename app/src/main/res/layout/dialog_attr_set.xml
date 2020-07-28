@@ -193,7 +193,7 @@
                             android:textSize="14sp" />
 
                         <EditText
-                            android:id="@+id/editText_epc_passwd"
+                            android:id="@+id/editText_epc_password"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@null"

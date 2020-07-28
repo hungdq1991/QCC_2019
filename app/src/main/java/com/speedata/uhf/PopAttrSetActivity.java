@@ -90,7 +90,7 @@ public class PopAttrSetActivity extends BaseActivity {
         rbtnPwdAcc = (RadioButton) findViewById( R.id.rbtn_pwd_acc );
         rbtnPwdKill = (RadioButton) findViewById( R.id.rbtn_pwd_kill );
 
-        passwd = (EditText) findViewById( R.id.editText_epc_passwd );
+        passwd = (EditText) findViewById( R.id.editText_epc_password );
         newepc = (EditText) findViewById( R.id.editText_epc_newepc );
         newepclength = (EditText) findViewById( R.id.editText_epc_epclength );
 
