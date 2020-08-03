@@ -11,5 +11,7 @@ public interface DepartmentView {
 
     void onGetResult(List<DepartmentModel> departmentModels);
 
+    void onGetCheckDepartment(String result);
+
     void onErrorLoading(String message);
 }

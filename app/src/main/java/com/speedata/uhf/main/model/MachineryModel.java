@@ -29,9 +29,6 @@ public class MachineryModel implements Serializable {
     private Integer status;
 
     @Expose
-    private String location;
-
-    @Expose
     private Date date_acceptance;
 
     @Expose
@@ -47,7 +44,7 @@ public class MachineryModel implements Serializable {
     private double depreciated_price;
 
     @Expose
-    private String department_used;
+    private String location;
 
     @Expose
     private String group_code;

@@ -38,7 +38,7 @@ public class InventoryPresenter {
                 if (response.isSuccessful() && response.body() != null) {
                     view.onGetResult( response.body() );
                     // Get your Response
-                    logLargeString( response.body().toString() );
+//                    logLargeString( response.body().toString() );
                 }
             }
 
@@ -56,7 +56,7 @@ public class InventoryPresenter {
         Gson gson = new Gson();
         String json = gson.toJson( inventoryList );
 
-        logLargeString( json );
+//        logLargeString( json);
 
         //Request to server
         RequestBody body = RequestBody.create( MediaType.parse( "application/json; charset=utf-8" ), json );
@@ -72,7 +72,6 @@ public class InventoryPresenter {
                 try {
                     if (response.isSuccessful() && response.body() != null) {
                         view.insertSuccess();
-//                        // Get your Response
 //                        logLargeString(response.body().string());
                     }
                 } catch (Exception e) {

@@ -53,8 +53,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -152,6 +150,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
             }
         }
     };
+
     // Listener callback reference code
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -183,12 +182,12 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
                                 Toast.makeText( InventoryActivity.this, "Tìm thấy tài sản: " + inventoryList.get( position_in_list ).getDepartment_asset_name(), Toast.LENGTH_SHORT ).show();
 
                                 //Sort inventoryList by Status Descending
-                                if (inventoryList.size() > 0) {
-                                    Collections.sort( inventoryList, Comparator.comparingInt( MachineryModel::getStatus ).reversed() );
-                                }
+//                                if (inventoryList.size() > 0) {
+//                                    Collections.sort( inventoryList, Comparator.comparingInt( MachineryModel::getStatus ).reversed() );
+//                                }
                                 count++;
-//                                inventoryAdapter.getFilter().filter(department_name1);
-                                inventoryAdapter.notifyDataSetChanged();
+                                inventoryAdapter.getFilter().filter( department_name1 );
+//                                inventoryAdapter.notifyDataSetChanged();
                             }
                             break;
                         }
@@ -277,9 +276,8 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 //                inventoryPresenter.getData(department_code);
 //                count = 0;
 //                tagNumTv.setText(String.valueOf(count));
-                    hideLoading();
-                }
-        );
+            hideLoading();
+        } );
 
         itemClickListener = ((view, position) -> {
             //TODO
@@ -293,24 +291,24 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         mIvMenu = findViewById( R.id.iv_menu );
         mIvMenu.setOnClickListener( this );
         // Set up
-        mIvSet = (ImageView) findViewById( R.id.iv_set );
+        mIvSet = findViewById( R.id.iv_set );
         // Search button
-        mBtSearch = (Button) findViewById( R.id.bt_search );
+        mBtSearch = findViewById( R.id.bt_search );
         mEtSearch = findViewById( R.id.et_search );
         mEtSearch.setOnClickListener( this );
         mIvSet.setOnClickListener( this );
         mBtSearch.setOnClickListener( this );
-        mFindBtn = (Button) findViewById( R.id.btn_find );
+        mFindBtn = findViewById( R.id.btn_find );
         mFindBtn.setOnClickListener( this );
-        mLlFind = (LinearLayout) findViewById( R.id.ll_find_layout );
-        mLlPause = (LinearLayout) findViewById( R.id.ll_pause_layout );
-        mTvListMsg = (TextView) findViewById( R.id.tv_list_msg );
-        mTBtnSound = (ToggleButton) findViewById( R.id.t_btn_sound );
-        tagNumTv = (TextView) findViewById( R.id.tv_number );
-        tagTotal = (TextView) findViewById( R.id.tv_total );
-        speedTv = (TextView) findViewById( R.id.speed_tv );
-        totalTime = (TextView) findViewById( R.id.totalTime );
-        btnFinish = (Button) findViewById( R.id.btn_finish );
+        mLlFind = findViewById( R.id.ll_find_layout );
+        mLlPause = findViewById( R.id.ll_pause_layout );
+        mTvListMsg = findViewById( R.id.tv_list_msg );
+        mTBtnSound = findViewById( R.id.t_btn_sound );
+        tagNumTv = findViewById( R.id.tv_number );
+        tagTotal = findViewById( R.id.tv_total );
+        speedTv = findViewById( R.id.speed_tv );
+        totalTime = findViewById( R.id.totalTime );
+        btnFinish = findViewById( R.id.btn_finish );
         btnFinish.setOnClickListener( this );
 
         mLlFind.setVisibility( View.VISIBLE );
@@ -562,8 +560,10 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 
         speedTv.setText( String.format( "%s" + getResources().getString( R.string.num ), rate ) );
 
-        //TODO - HUNG TEST
+        //TODO - START
         tagNumTv.setText( String.format( "%s", count ) );
+        tagTotal.setText( " / " + inventoryAdapter.getItemCount() );
+        //TODO - END
 
         totalTime.setText( String.format( getResources().getString( R.string.spend_time ) + "%s", getTimeFromMillisecond( totalTimeCount ) ) );
     }
@@ -646,14 +646,14 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         if (inventoryAdapter == null) {
             Toast.makeText( this, "Is null", Toast.LENGTH_SHORT ).show();
         } else {
-//            inventoryAdapter.getFilter().filter( department_name1 );
-            inventoryAdapter.notifyDataSetChanged();
+            inventoryAdapter.getFilter().filter( department_name1 );
+//            inventoryAdapter.notifyDataSetChanged();
         }
 
-        inventoryList = inventoryModels;
-
         //Set total of inventoryList
-        tagTotal.setText( " / " + inventoryList.size() );
+        tagTotal.setText( " / " + inventoryAdapter.getItemCount() );
+
+        inventoryList = inventoryModels;
     }
 
     @Override

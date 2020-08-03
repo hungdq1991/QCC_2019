@@ -24,18 +24,25 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     private static final int ASSET_NOT_FOUND_YET = 0;
     private static final int ASSET_FOUND = 1;
     private static final int ASSET_ANOTHER_FACTORY = 2;
+
     private Context context;
-    private List<MachineryModel> inventoryList, inventoryListFull, inventoryListFiltered;
+    private List<MachineryModel> inventoryList;
+    private List<MachineryModel> inventoryListFull;
+    private List<MachineryModel> inventoryListFiltered;
     private ItemClickListener itemClickListener;
 
     public InventoryAdapter(Context context, List<MachineryModel> inventoryLists, ItemClickListener itemClickListeners) {
         this.context = context;
-        this.inventoryList = inventoryLists;
         this.itemClickListener = itemClickListeners;
 
+        //List used currently
+        this.inventoryList = inventoryLists;
+
+        //List data Full, no Filter
         this.inventoryListFull = new ArrayList<>();
         this.inventoryListFull.addAll( inventoryLists );
 
+        //List data Filter
         this.inventoryListFiltered = new ArrayList<>();
         this.inventoryListFiltered.addAll( inventoryLists );
     }
@@ -73,17 +80,17 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
         return inventoryList.size();
     }
 
+    //Update status Assets
     public int updateRecyclerView(String epc, String department_code) {
         int count = 0;
-        for (MachineryModel row : inventoryList) {
+        for (MachineryModel row : inventoryListFull) {
             if (row.getRFID_code().toLowerCase().contains( epc.toLowerCase() )) {
                 if (row.getStatus() == ASSET_NOT_FOUND_YET && row.getDepartment_code() == department_code) {
-                    inventoryList.get( count ).setStatus( ASSET_FOUND );
+                    inventoryListFull.get( count ).setStatus( ASSET_FOUND );
                     notifyItemChanged( count );
                     return count;
-                } else if (row.getStatus() == ASSET_NOT_FOUND_YET
-                        && row.getDepartment_code() != department_code) {
-                    inventoryList.get( count ).setStatus( ASSET_ANOTHER_FACTORY );
+                } else if (row.getStatus() == ASSET_NOT_FOUND_YET && row.getDepartment_code() != department_code) {
+                    inventoryListFull.get( count ).setStatus( ASSET_ANOTHER_FACTORY );
                     notifyItemChanged( count );
                     return count;
                 }
@@ -99,10 +106,10 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
             protected FilterResults performFiltering(CharSequence charSequence) {
                 String charString = charSequence.toString();
                 if (charString.isEmpty()) {
-                    inventoryListFiltered = inventoryList;
+                    inventoryListFiltered = inventoryListFull;
                 } else {
                     List<MachineryModel> filteredList = new ArrayList<>();
-                    for (MachineryModel row : inventoryList) {
+                    for (MachineryModel row : inventoryListFull) {
                         // Name match condition. This might differ depending on your
                         // requirement here we are looking for name or phone number match
                         if (row.getDepartment_code().toLowerCase().contains( charString.toLowerCase() )
@@ -121,7 +128,6 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                inventoryList.clear();
                 inventoryList = (List<MachineryModel>) filterResults.values;
                 notifyDataSetChanged();
             }
@@ -131,15 +137,6 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
-
-//    public String[] Split_String_To_Array(int length, String string_Input)
-//    {
-//        return Iterables.toArray(
-//            Splitter.fixedLength(length)
-//                    .split(string_Input),
-//            String.class
-//        );
-//    }
 
     public class RecyclerViewAdapter extends RecyclerView.ViewHolder implements View.OnClickListener {
 

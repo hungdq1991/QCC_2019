@@ -6,6 +6,7 @@ import com.speedata.uhf.main.api.ApiClient;
 import com.speedata.uhf.main.api.ApiInterface;
 import com.speedata.uhf.main.model.DepartmentModel;
 
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -54,7 +55,11 @@ public class DepartmentPresenter {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 view.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
-//                    view.onGetResult( response.body() );
+                    try {
+                        view.onGetCheckDepartment( response.body().string() );
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
