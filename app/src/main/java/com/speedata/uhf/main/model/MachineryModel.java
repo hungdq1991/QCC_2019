@@ -8,6 +8,9 @@ import java.util.Date;
 public class MachineryModel implements Serializable {
 
     @Expose
+    private int ordinal_numbers;
+
+    @Expose
     private String inventory_date;
 
     @Expose

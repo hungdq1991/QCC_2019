@@ -96,9 +96,9 @@ public class DepartmentActivity extends AppCompatActivity implements DepartmentV
     @Override
     /**
      * @result: Kết quả Check
-     *          "OK"    : Check OK, di chuyển qua InventoryActivity.
-     *          "Error1": Phòng ban đã kiểm kê trong ngày.
-     *          "Error2": Chưa nhập thông tin máy móc thiết bị cho phòng ban.
+     *          200 : Check OK, di chuyển qua InventoryActivity.
+     *          409 : Phòng ban đã kiểm kê trong ngày.
+     *          404 : Chưa nhập thông tin máy móc thiết bị cho phòng ban.
      */
     public void onGetCheckDepartment(String result) {
         int result_code = Integer.parseInt( result );
