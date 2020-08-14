@@ -8,7 +8,7 @@ import java.util.Date;
 public class MachineryModel implements Serializable {
 
     @Expose
-    private int ordinal_numbers;
+    private Integer ordinal_numbers;
 
     @Expose
     private String inventory_date;
@@ -55,8 +55,16 @@ public class MachineryModel implements Serializable {
     @Expose
     private String inventory_department;
 
+    public Integer getOrdinal_numbers() {
+        return ordinal_numbers;
+    }
+
     public String getDepartment_code() {
         return department_code;
+    }
+
+    public void setOrdinal_numbers(Integer ordinal_numbers) {
+        this.ordinal_numbers = ordinal_numbers;
     }
 
     public String getDepartment_asset_name() {
@@ -69,6 +77,10 @@ public class MachineryModel implements Serializable {
 
     public Integer getStatus() {
         return status;
+    }
+
+    public String getAsset_code() {
+        return asset_code;
     }
 
     public void setStatus(Integer status) {

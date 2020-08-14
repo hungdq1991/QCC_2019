@@ -69,12 +69,13 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
      * HUNG
      */
     private static final int INTENT_ADD = 100;
-    RecyclerView recyclerView;
-    SwipeRefreshLayout swipeRefreshLayout;
-    InventoryPresenter inventoryPresenter;
-    InventoryAdapter inventoryAdapter;
-    InventoryAdapter.ItemClickListener itemClickListener;
-    List<MachineryModel> inventoryList;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private InventoryPresenter inventoryPresenter;
+    private InventoryAdapter inventoryAdapter;
+    private InventoryAdapter.ItemClickListener itemClickListener;
+    private List<MachineryModel> inventoryList;
+
     /**
      * Search input box
      */
@@ -179,15 +180,12 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
                             //HUNG TEST - Find epc code in inventoryList
                             position_in_list = inventoryAdapter.updateRecyclerView( var1.epc, department_name1 );
                             if (position_in_list != -1) {
-                                Toast.makeText( InventoryActivity.this, "Tìm thấy tài sản: " + inventoryList.get( position_in_list ).getDepartment_asset_name(), Toast.LENGTH_SHORT ).show();
-
-                                //Sort inventoryList by Status Descending
-//                                if (inventoryList.size() > 0) {
-//                                    Collections.sort( inventoryList, Comparator.comparingInt( MachineryModel::getStatus ).reversed() );
-//                                }
-                                count++;
+//                                Toast.makeText( InventoryActivity.this,
+//                                        "Tìm thấy tài sản: " + inventoryList.get( position_in_list ).getDepartment_asset_name(), Toast.LENGTH_SHORT ).show();
                                 inventoryAdapter.getFilter().filter( department_name1 );
-//                                inventoryAdapter.notifyDataSetChanged();
+                                inventoryAdapter.notifyDataSetChanged();
+
+                                count++;
                             }
                             break;
                         }
@@ -273,9 +271,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         inventoryPresenter.getData( group_code, department_name1 );
 
         swipeRefreshLayout.setOnRefreshListener( () -> {
-//                inventoryPresenter.getData(department_code);
-//                count = 0;
-//                tagNumTv.setText(String.valueOf(count));
+            //
             hideLoading();
         } );
 
@@ -576,7 +572,6 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onStop() {
-
         Log.w( "stop", "im stopping" );
         if (inSearch) {
             iuhfService.inventoryStop();
@@ -647,7 +642,6 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
             Toast.makeText( this, "Is null", Toast.LENGTH_SHORT ).show();
         } else {
             inventoryAdapter.getFilter().filter( department_name1 );
-//            inventoryAdapter.notifyDataSetChanged();
         }
 
         //Set total of inventoryList
