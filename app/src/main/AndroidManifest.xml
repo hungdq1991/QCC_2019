@@ -41,7 +41,7 @@
         <activity
             android:name=".HelloActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +50,7 @@
         </activity>
         <activity
             android:name=".main.activity.Inventory.InventoryActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
@@ -75,7 +75,7 @@
             android:name=".CurrentCardActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".PopSetServiceActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -84,12 +84,12 @@
             android:name=".InvSetActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SetActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="spd.intent.action.UHF" />
@@ -114,7 +114,7 @@
         <activity
             android:name=".SearchDirectionActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity android:name=".PikestaffActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />

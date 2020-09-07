@@ -38,7 +38,7 @@ public class CurrentCardActivity extends BaseActivity implements View.OnClickLis
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         //强制为竖屏
-        setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED );
+        setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
         setContentView( R.layout.select_one_card );
         getData();
         initView();

@@ -107,7 +107,7 @@ public class DepartmentActivity extends AppCompatActivity implements DepartmentV
             Bundle bundle = new Bundle();
             bundle.putString( "group_code", group_code );
             bundle.putString( "department_name1", name1 );
-            intent.putExtras( bundle );
+            intent.putExtra( "department", bundle );
             intent.setClass( this, InventoryActivity.class );
             startActivity( intent );
         } else if (result_code == 409) {

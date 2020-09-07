@@ -32,10 +32,10 @@ public class HelloActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
+        //强制为竖屏
+        setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
         //全屏显示
         getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
-        //强制为竖屏
-        setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED );
         setContentView( R.layout.activity_hello );
         //TODO
         final Intent it = new Intent( this, HistoryActivity.class );

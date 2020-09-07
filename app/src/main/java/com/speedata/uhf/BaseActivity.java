@@ -47,7 +47,7 @@ public class BaseActivity extends Activity {
         //全屏显示
         getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
         //强制为竖屏
-        setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED );
+        setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
         setBuilder();
         if (handler != null) {
             handler.postDelayed( runnable, 50 );

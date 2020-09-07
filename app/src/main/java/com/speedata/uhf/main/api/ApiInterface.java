@@ -32,4 +32,8 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("check_Exists_Inventory.php")
     Call<ResponseBody> check_Exists_Inventory(@Field("inventory_date") String inventory_date, @Field("department_name1") String department_name1);
+
+    @FormUrlEncoded
+    @POST("get_Current_ListMachinery.php")
+    Call<List<MachineryModel>> getCurrentListInventory(@Field("inventory_date") String inventory_date, @Field("department_name1") String department_name1);
 }

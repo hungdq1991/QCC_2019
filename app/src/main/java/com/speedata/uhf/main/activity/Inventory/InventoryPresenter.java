@@ -20,12 +20,14 @@ import retrofit2.Response;
 
 public class InventoryPresenter {
     private InventoryView view;
+    private static final String TAG = "InventoryPresenter";
 
     public InventoryPresenter(InventoryView view) {
         this.view = view;
     }
 
-    public void getData(String group_code, String department_name1) {
+    public void getNew_Inventory_Data(String group_code, String department_name1) {
+        Log.d( TAG, "getNew_Inventory_Data: started." );
         view.showLoading();
 
         //Request to server
@@ -36,9 +38,33 @@ public class InventoryPresenter {
             public void onResponse(@NonNull Call<List<MachineryModel>> call, @NonNull Response<List<MachineryModel>> response) {
                 view.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d( TAG, "onResponse: get response value from API 'getListMachinery.php'" );
                     view.onGetResult( response.body() );
-                    // Get your Response
-//                    logLargeString( response.body().toString() );
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<MachineryModel>> call, @NonNull Throwable t) {
+                view.hideLoading();
+                view.onErrorLoading( t.getLocalizedMessage() );
+            }
+        } );
+    }
+
+    public void getCurrent_Inventory_Data(String date_inventory, String department_name1) {
+        Log.d( TAG, "getCurrent_Inventory_Data: started." );
+        view.showLoading();
+
+        //Request to server
+        ApiInterface apiInterface = ApiClient.getApiClient().create( ApiInterface.class );
+        Call<List<MachineryModel>> call = apiInterface.getCurrentListInventory( date_inventory, department_name1 );
+        call.enqueue( new Callback<List<MachineryModel>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<MachineryModel>> call, @NonNull Response<List<MachineryModel>> response) {
+                view.hideLoading();
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d( TAG, "onResponse: get response value from API 'getCurrentListInventory.php'" );
+                    view.onGetResult( response.body() );
                 }
             }
 
@@ -51,19 +77,16 @@ public class InventoryPresenter {
     }
 
     void send_Result(List<MachineryModel> inventoryList) {
+        Log.d( TAG, "send_Result: sent result inventory to API 'send_Inventory_Result.php'" );
         view.showLoading();
 
         Gson gson = new Gson();
         String json = gson.toJson( inventoryList );
 
-//        logLargeString( json);
-
         //Request to server
         RequestBody body = RequestBody.create( MediaType.parse( "application/json; charset=utf-8" ), json );
         ApiInterface apiInterface = ApiClient.getApiClient().create( ApiInterface.class );
         Call<ResponseBody> call = apiInterface.send_Inventory_Result( body );
-
-//        logLargeString(body.toString());
 
         call.enqueue( new Callback<ResponseBody>() {
             @Override
@@ -72,7 +95,6 @@ public class InventoryPresenter {
                 try {
                     if (response.isSuccessful() && response.body() != null) {
                         view.insertSuccess();
-//                        logLargeString(response.body().string());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

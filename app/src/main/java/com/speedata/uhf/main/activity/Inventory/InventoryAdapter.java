@@ -84,7 +84,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     public void onBindViewHolder(@NonNull RecyclerViewAdapter holder, int position) {
         MachineryModel model = inventoryList.get( position );
         holder.tv_department_code.setText( model.getDepartment_code() );
-        holder.tv_RFID_code.setText( model.getRFID_code() );
+        holder.tv_asset_code.setText( model.getAsset_code() );
         holder.tv_department_asset_name.setText( model.getDepartment_asset_name() );
         holder.tv_ordinal_numbers.setText( String.valueOf( model.getOrdinal_numbers() ) );
 
@@ -107,13 +107,14 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
         int count = 0;
         int max_ordinal_number = 0;
         String RFID_Code = "";
+        String regex_pattern = "5354(.*)454E";
 
         /**
          * Cut 2 character start and end between HEX code
          * HEX: 5354 => TEXT: "ST"
          * HEX: 454E => TEXT: "EN"
          */
-        Pattern pattern = Pattern.compile( "5354(.*)454E" );
+        Pattern pattern = Pattern.compile( regex_pattern );
         Matcher matcher = pattern.matcher( epc );
         if (matcher.find()) {
             RFID_Code = hexToString( matcher.group( 1 ) );
@@ -182,7 +183,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     public class RecyclerViewAdapter extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView mIconStatus;
-        private TextView tv_department_code, tv_RFID_code, tv_department_asset_name, tv_ordinal_numbers;
+        private TextView tv_department_code, tv_asset_code, tv_department_asset_name, tv_ordinal_numbers;
         private CardView card_item;
         private ItemClickListener itemClickListener;
 
@@ -191,7 +192,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
 
             mIconStatus = itemView.findViewById( R.id.image_icon_status );
             tv_department_code = itemView.findViewById( R.id.department_code );
-            tv_RFID_code = itemView.findViewById( R.id.rfid_code );
+            tv_asset_code = itemView.findViewById( R.id.asset_code );
             tv_department_asset_name = itemView.findViewById( R.id.department_asset_name );
             tv_ordinal_numbers = itemView.findViewById( R.id.ordinal_numbers );
             card_item = itemView.findViewById( R.id.card_item );

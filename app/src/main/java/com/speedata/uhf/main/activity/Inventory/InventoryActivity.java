@@ -125,8 +125,13 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     private BufferedWriter writer;
     private int count = 0;
     private Button btnFinish;
+
+    private static final String TAG = "InventoryActivity";
     private String group_code;
     private String department_name1;
+    //Value get from another activity
+    private String date_inventory;
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -249,9 +254,9 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-
+        Log.d( TAG, "onCreate: started." );
         //Forced to portrait
-        setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED );
+        setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
         iuhfService = MyApp.getInstance().getIuhfService();
         model = UHFManager.getUHFModel();
         //
@@ -261,20 +266,17 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         //
         initReceive();
         //
-        getData();
-        //
-        swipeRefreshLayout = findViewById( R.id.swipe_refresh );
-        recyclerView = findViewById( R.id.recycler_view );
-        recyclerView.setLayoutManager( new LinearLayoutManager( this ) );
-
         inventoryPresenter = new InventoryPresenter( this );
-        inventoryPresenter.getData( group_code, department_name1 );
+        //
+        getData();
 
+        //When swipeRefresh, hide loading, do nothing
         swipeRefreshLayout.setOnRefreshListener( () -> {
             //
             hideLoading();
         } );
 
+        //When click item in recyclerView
         itemClickListener = ((view, position) -> {
             //TODO
 //            String name = inventoryList.get( position ).getDepartment_name();
@@ -288,12 +290,14 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         mIvMenu.setOnClickListener( this );
         // Set up
         mIvSet = findViewById( R.id.iv_set );
+        mIvSet.setOnClickListener( this );
         // Search button
         mBtSearch = findViewById( R.id.bt_search );
+        mBtSearch.setOnClickListener( this );
+        //
         mEtSearch = findViewById( R.id.et_search );
         mEtSearch.setOnClickListener( this );
-        mIvSet.setOnClickListener( this );
-        mBtSearch.setOnClickListener( this );
+        //
         mFindBtn = findViewById( R.id.btn_find );
         mFindBtn.setOnClickListener( this );
         mLlFind = findViewById( R.id.ll_find_layout );
@@ -304,9 +308,15 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         tagTotal = findViewById( R.id.tv_total );
         speedTv = findViewById( R.id.speed_tv );
         totalTime = findViewById( R.id.totalTime );
+        //
         btnFinish = findViewById( R.id.btn_finish );
         btnFinish.setOnClickListener( this );
+        swipeRefreshLayout = findViewById( R.id.swipe_refresh );
+        //
+        recyclerView = findViewById( R.id.recycler_view );
+        recyclerView.setLayoutManager( new LinearLayoutManager( this ) );
 
+        //
         mLlFind.setVisibility( View.VISIBLE );
         mLlPause.setVisibility( View.GONE );
         mTvListMsg.setVisibility( View.GONE );
@@ -357,9 +367,18 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 
     private void getData() {
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        group_code = bundle.getString( "group_code" );
-        department_name1 = bundle.getString( "department_name1" );
+        Bundle bundle;
+        if ((bundle = intent.getBundleExtra( "department" )) != null) {
+            group_code = bundle.getString( "group_code" );
+            department_name1 = bundle.getString( "department_name1" );
+            //
+            inventoryPresenter.getNew_Inventory_Data( group_code, department_name1 );
+        } else if ((bundle = intent.getBundleExtra( "history" )) != null) {
+            date_inventory = bundle.getString( "date_inventory" );
+            department_name1 = bundle.getString( "department_name1" );
+            //
+            inventoryPresenter.getCurrent_Inventory_Data( date_inventory, department_name1 );
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.speedata.uhf.R;
 import com.speedata.uhf.main.activity.Department.DepartmentActivity;
+import com.speedata.uhf.main.activity.Inventory.InventoryActivity;
 import com.speedata.uhf.main.model.ResultInventoryModel;
 
 import java.util.List;
@@ -44,14 +45,17 @@ public class HistoryActivity extends AppCompatActivity implements HistoryView {
 
         itemClickListener = ((view, position) -> {
             String date_inventory = resultModelList.get( position ).getInventory_date();
-//            String department_name1 = resultModelList.get( position ).getGroup_code();
-//            if (department_code.equals( "IT1" ) || department_code.equals( "IT2" ))
-//            {
-//                startActivityForResult( new Intent( this, InventoryActivity.class ), INTENT_ADD );
-//            } else {
-//                Toast.makeText( HistoryActivity.this, date_inventory + " " + department_code, Toast.LENGTH_SHORT ).show();
-//            }
-            Toast.makeText( HistoryActivity.this, "Chức năng đang bảo trì!", Toast.LENGTH_SHORT ).show();
+            String department = resultModelList.get( position ).getInventory_department();
+
+//            Integer inventoryFind = (int) resultModelList.get( position ).getFind();
+//            Integer inventoryTotal = (int) resultModelList.get( position ).getTotal();
+
+            Intent intent = new Intent( this, InventoryActivity.class );
+            Bundle bundle = new Bundle();
+            bundle.putString( "date_inventory", date_inventory );
+            bundle.putString( "department_name1", department );
+            intent.putExtra( "history", bundle );
+            startActivity( intent );
         });
 
         fab.setOnClickListener( view -> {
