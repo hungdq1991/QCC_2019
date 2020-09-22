@@ -35,7 +35,6 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import com.speedata.libuhf.IUHFService;
 import com.speedata.libuhf.UHFManager;
 import com.speedata.libuhf.bean.SpdInventoryData;
-import com.speedata.libuhf.interfaces.OnSpdInventoryListener;
 import com.speedata.libuhf.utils.SharedXmlUtil;
 import com.speedata.uhf.BaseActivity;
 import com.speedata.uhf.InvSetActivity;
@@ -204,14 +203,6 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
                     uhfCardAdapter.notifyDataSetChanged();
                     updateRateCount();
                     break;
-//                case 2:
-//                    kProgressHUD.dismiss();
-//                    Toast.makeText( InventoryActivity.this, "Export the complete", Toast.LENGTH_SHORT).show();
-//                    break;
-//
-//                case 3:
-//                    kProgressHUD.dismiss();
-//                    Toast.makeText( InventoryActivity.this, "There is a problem in exporting! Please try again", Toast.LENGTH_SHORT).show();
                 default:
                     break;
             }
@@ -325,15 +316,12 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     public void initSoundPool() {
         soundPool = new SoundPool( 2, AudioManager.STREAM_MUSIC, 0 );
         soundId = soundPool.load( "/system/media/audio/ui/VideoRecord.ogg", 0 );
-        Log.w( "as3992_6C", "id is " + soundId );
+        Log.d( TAG, "id is " + soundId );
 
         // Inventory callback function
-        iuhfService.setOnInventoryListener( new OnSpdInventoryListener() {
-            @Override
-            public void getInventoryData(SpdInventoryData var1) {
-                handler.sendMessage( handler.obtainMessage( 1, var1 ) );
-                Log.d( "UHFService", "Callback" );
-            }
+        iuhfService.setOnInventoryListener( (SpdInventoryData var1) -> {
+            handler.sendMessage( handler.obtainMessage( 1, var1 ) );
+            Log.d( "UHFService", "Callback" );
         } );
     }
 
@@ -359,6 +347,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
      * Register Broadcast
      */
     private void initReceive() {
+        Log.d( TAG, "initReceive: register Broadcast." );
         IntentFilter filter = new IntentFilter();
         filter.addAction( START_SCAN );
         filter.addAction( STOP_SCAN );
@@ -366,16 +355,21 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void getData() {
+        Log.d( TAG, "getData: get data intent" );
         Intent intent = getIntent();
         Bundle bundle;
         if ((bundle = intent.getBundleExtra( "department" )) != null) {
+            Log.d( TAG, "getData: department" );
             group_code = bundle.getString( "group_code" );
             department_name1 = bundle.getString( "department_name1" );
+            Log.d( TAG, "getData: group code " + group_code + ", department_name1: " + department_name1 );
             //
             inventoryPresenter.getNew_Inventory_Data( group_code, department_name1 );
         } else if ((bundle = intent.getBundleExtra( "history" )) != null) {
+            Log.d( TAG, "getData: history" );
             date_inventory = bundle.getString( "date_inventory" );
             department_name1 = bundle.getString( "department_name1" );
+            Log.d( TAG, "getData: date_inventory " + date_inventory + ", department_name1: " + department_name1 );
             //
             inventoryPresenter.getCurrent_Inventory_Data( date_inventory, department_name1 );
         }
@@ -385,6 +379,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
      * Start inventory
      */
     private void startUhf() {
+        Log.d( TAG, "startUhf: Start search." );
         if (iuhfService == null) {
             return;
         }
@@ -396,6 +391,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         //Unmask
         iuhfService.selectCard( 1, "", false );
         iuhfService.inventoryStart();
@@ -422,6 +418,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
      * Stop inventory
      */
     private void stopUhf() {
+        Log.d( TAG, "stopUhf: Stop search." );
         if (iuhfService == null) {
             return;
         }
@@ -523,6 +520,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
+        Log.d( TAG, "onResume: activity.onResume." );
         super.onResume();
         //Initialize the sound thread
         initSoundPool();
@@ -531,6 +529,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onPause() {
+        Log.d( TAG, "onPause: activity.onPause." );
         stopUhf();
         MyApp.isOpenServer = true;
         if (iuhfService != null) {
@@ -566,7 +565,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
      * Update display data
      */
     private void updateRateCount() {
-        Log.e( "zzc", "==updateRateCount==" );
+        Log.d( TAG, "==updateRateCount==" );
         long mlEndTime = System.currentTimeMillis();
 
         double rate = Math.ceil( (scant * 1.0) * 1000 / (mlEndTime - startCheckingTime) );
@@ -575,15 +574,14 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 
         speedTv.setText( String.format( "%s" + getResources().getString( R.string.num ), rate ) );
 
-        //TODO - START
         tagNumTv.setText( String.format( "%s", count ) );
         tagTotal.setText( " / " + inventoryAdapter.getItemCount() );
-        //TODO - END
 
         totalTime.setText( String.format( getResources().getString( R.string.spend_time ) + "%s", getTimeFromMillisecond( totalTimeCount ) ) );
     }
 
     private void sendUpdateService() {
+        Log.d( TAG, "sendUpdateService: sendBroadcast update" );
         Intent intent = new Intent();
         intent.setAction( "uhf.update" );
         this.sendBroadcast( intent );
@@ -591,7 +589,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onStop() {
-        Log.w( "stop", "im stopping" );
+        Log.d( TAG, "onStop: activity.onStop" );
         if (inSearch) {
             iuhfService.inventoryStop();
             inSearch = false;
@@ -605,7 +603,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
             if (!SharedXmlUtil
                     .getInstance( this )
                     .read( "server", false )) {
-                Log.e( "zzc:", "==onDestroy()==Power off" );
+                Log.d( TAG, "onDestroy: activity.onDestroy. Power off" );
                 MyApp.getInstance().releaseIuhfService();
                 MyApp.isOpenDev = false;
             }

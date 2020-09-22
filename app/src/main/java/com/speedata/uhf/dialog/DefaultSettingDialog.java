@@ -18,7 +18,7 @@ import com.speedata.uhf.R;
 import com.speedata.uhf.libutils.ToastUtil;
 
 /**
- * @author Quoc Hung
+ * @author
  */
 public class DefaultSettingDialog extends Dialog implements View.OnClickListener {
     private Context mContext;

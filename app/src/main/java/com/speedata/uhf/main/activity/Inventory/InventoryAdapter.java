@@ -3,6 +3,7 @@ package com.speedata.uhf.main.activity.Inventory;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,8 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     private List<MachineryModel> inventoryListFull;
     private List<MachineryModel> inventoryListFiltered;
     private ItemClickListener itemClickListener;
+
+    private static final String TAG = "InventoryAdapter";
 
     public InventoryAdapter(Context context, List<MachineryModel> inventoryLists, ItemClickListener itemClickListeners) {
         this.context = context;
@@ -94,9 +97,11 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
         } else {
             holder.mIconStatus.setImageResource( R.drawable.icon_ok );
             if (model.getStatus().equals( ASSET_ANOTHER_FACTORY )) {
-                holder.card_item.setBackgroundColor( Color.YELLOW );
+                //Set background yellow
+                holder.card_item.setBackgroundColor( Color.rgb( 255, 255, 102 ) );
             } else {
-                holder.card_item.setBackgroundColor( Color.WHITE );
+                //Set background grey
+                holder.card_item.setBackgroundColor( Color.rgb( 191, 191, 191 ) );
             }
         }
     }
@@ -123,15 +128,19 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
                     Comparator.comparingInt( MachineryModel::getOrdinal_numbers ) ).getOrdinal_numbers();
 
             for (MachineryModel row : inventoryListFull) {
-                if (row.getAsset_code().toLowerCase().contains( RFID_Code.toLowerCase() )) {
-                    if (row.getStatus() == ASSET_NOT_FOUND_YET && row.getDepartment_code() == department_code) {
-                        inventoryListFull.get( count ).setOrdinal_numbers( max_ordinal_number + 1 );
-                        inventoryListFull.get( count ).setStatus( ASSET_FOUND );
-                        return count;
-                    } else if (row.getStatus() == ASSET_NOT_FOUND_YET && row.getDepartment_code() != department_code) {
-                        inventoryListFull.get( count ).setOrdinal_numbers( max_ordinal_number + 1 );
-                        inventoryListFull.get( count ).setStatus( ASSET_ANOTHER_FACTORY );
-                        return count;
+                if (row.getAsset_code().toLowerCase().equals( RFID_Code.toLowerCase() )) {
+                    if (row.getStatus() == ASSET_NOT_FOUND_YET) {
+                        if (row.getDepartment_code().equals( department_code )) {
+                            Log.d( TAG, "updateRecyclerView: " + row.getAsset_code() + " " + row.getStatus() + " " + row.getDepartment_code() + " " + department_code );
+                            inventoryListFull.get( count ).setOrdinal_numbers( max_ordinal_number + 1 );
+                            inventoryListFull.get( count ).setStatus( ASSET_FOUND );
+                            return count;
+                        } else {
+                            Log.d( TAG, "updateRecyclerView: " + row.getAsset_code() + " " + row.getStatus() + " " + row.getDepartment_code() + " " + department_code );
+                            inventoryListFull.get( count ).setOrdinal_numbers( max_ordinal_number + 1 );
+                            inventoryListFull.get( count ).setStatus( ASSET_ANOTHER_FACTORY );
+                            return count;
+                        }
                     }
                 }
                 count++;

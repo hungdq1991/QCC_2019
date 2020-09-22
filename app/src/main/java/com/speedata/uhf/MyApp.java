@@ -27,7 +27,7 @@ import java.io.IOException;
 //import com.tencent.bugly.crashreport.CrashReport;
 
 /**
- * @author Quoc Hung
+ * @author
  * @date 2020/07/21
  */
 public class MyApp extends Application {

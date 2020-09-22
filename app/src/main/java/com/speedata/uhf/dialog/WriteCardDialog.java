@@ -31,7 +31,7 @@ import java.util.Objects;
 /**
  * Write card
  *
- * @author Quoc Hung
+ * @author
  * @date 2020/05/28
  */
 public class WriteCardDialog extends Dialog implements

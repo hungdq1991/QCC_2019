@@ -28,7 +28,7 @@ import java.util.Objects;
 /**
  * Card reader
  *
- * @author Quoc Hung
+ * @author
  * @date 2020/05/28
  */
 

@@ -27,7 +27,7 @@ import com.uhf.structures.FixedQParams;
  * <p>
  * The core module has been added to the algorithm
  *
- * @author Quoc Hung
+ * @author
  */
 public class InventorySettingDialog extends Dialog implements View.OnClickListener {
 

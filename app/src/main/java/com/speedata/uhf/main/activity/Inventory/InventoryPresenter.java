@@ -33,6 +33,7 @@ public class InventoryPresenter {
         //Request to server
         ApiInterface apiInterface = ApiClient.getApiClient().create( ApiInterface.class );
         Call<List<MachineryModel>> call = apiInterface.getListInventory( group_code, department_name1 );
+        Log.d( TAG, "onResponse: group code: " + group_code + ", department_name1: " + department_name1 );
         call.enqueue( new Callback<List<MachineryModel>>() {
             @Override
             public void onResponse(@NonNull Call<List<MachineryModel>> call, @NonNull Response<List<MachineryModel>> response) {

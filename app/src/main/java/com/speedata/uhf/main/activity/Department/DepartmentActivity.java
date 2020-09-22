@@ -109,6 +109,7 @@ public class DepartmentActivity extends AppCompatActivity implements DepartmentV
             bundle.putString( "department_name1", name1 );
             intent.putExtra( "department", bundle );
             intent.setClass( this, InventoryActivity.class );
+            Toast.makeText( DepartmentActivity.this, group_code + " " + name1, Toast.LENGTH_SHORT ).show();
             startActivity( intent );
         } else if (result_code == 409) {
             Toast.makeText( DepartmentActivity.this, "Phòng " + name1 + "đã kiểm kê trong ngày", Toast.LENGTH_SHORT ).show();

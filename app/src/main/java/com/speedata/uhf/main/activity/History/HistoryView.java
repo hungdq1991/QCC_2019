@@ -11,7 +11,5 @@ public interface HistoryView {
 
     void onGetResult(List<ResultInventoryModel> resultModels);
 
-//    void onGetInventoryResult(List<MachineryModel> inventoryModels);
-
     void onErrorLoading(String message);
 }

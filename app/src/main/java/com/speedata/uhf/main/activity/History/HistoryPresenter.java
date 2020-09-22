@@ -40,28 +40,4 @@ public class HistoryPresenter {
         } );
     }
 
-//    public void getCurrentListMachinery(String group_code, String department_name1) {
-//        view.showLoading();
-//
-//        //Request to server
-//        ApiInterface apiInterface = ApiClient.getApiClient().create( ApiInterface.class );
-//        Call<List<MachineryModel>> call = apiInterface.getListInventory( group_code, department_name1 );
-//        call.enqueue( new Callback<List<MachineryModel>>() {
-//            @Override
-//            public void onResponse(@NonNull Call<List<MachineryModel>> call, @NonNull Response<List<MachineryModel>> response) {
-//                view.hideLoading();
-//                if (response.isSuccessful() && response.body() != null) {
-//                    view.onGetInventoryResult( response.body() );
-//                    // Get your Response
-////                    logLargeString( response.body().toString() );
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<List<MachineryModel>> call, @NonNull Throwable t) {
-//                view.hideLoading();
-//                view.onErrorLoading( t.getLocalizedMessage() );
-//            }
-//        } );
-//    }
 }

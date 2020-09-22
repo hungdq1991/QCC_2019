@@ -21,7 +21,7 @@ import com.speedata.libuhf.utils.SharedXmlUtil;
 import com.speedata.uhf.main.activity.History.HistoryActivity;
 
 /**
- * @author Hung DQ
+ * @author
  */
 public class HelloActivity extends Activity {
 
