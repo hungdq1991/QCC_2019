@@ -55,16 +55,32 @@ public class MachineryModel implements Serializable {
     @Expose
     private String inventory_department;
 
+    public void setOrdinal_numbers(Integer ordinal_numbers) {
+        this.ordinal_numbers = ordinal_numbers;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Integer getOrdinal_numbers() {
         return ordinal_numbers;
+    }
+
+    public String getInventory_date() {
+        return inventory_date;
     }
 
     public String getDepartment_code() {
         return department_code;
     }
 
-    public void setOrdinal_numbers(Integer ordinal_numbers) {
-        this.ordinal_numbers = ordinal_numbers;
+    public String getAsset_code() {
+        return asset_code;
+    }
+
+    public String getDepartment_asset_code() {
+        return department_asset_code;
     }
 
     public String getDepartment_asset_name() {
@@ -79,11 +95,35 @@ public class MachineryModel implements Serializable {
         return status;
     }
 
-    public String getAsset_code() {
-        return asset_code;
+    public Date getDate_acceptance() {
+        return date_acceptance;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public Date getDate_depreciation() {
+        return date_depreciation;
+    }
+
+    public int getTime_used() {
+        return time_used;
+    }
+
+    public double getOriginal_price() {
+        return original_price;
+    }
+
+    public double getDepreciated_price() {
+        return depreciated_price;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getGroup_code() {
+        return group_code;
+    }
+
+    public String getInventory_department() {
+        return inventory_department;
     }
 }

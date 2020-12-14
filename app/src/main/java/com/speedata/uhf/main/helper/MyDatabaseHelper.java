@@ -2,13 +2,20 @@ package com.speedata.uhf.main.helper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
+import android.text.format.DateFormat;
 
 import androidx.annotation.Nullable;
 
+import com.speedata.uhf.main.model.MachineryModel;
+
+import java.util.List;
+
 public class MyDatabaseHelper extends SQLiteOpenHelper {
+    private static final String TAG = "MyDatabaseHelper";
+
     private static final String DATABASE_NAME = "qcc.db";
     private static final Integer DATABASE_VERSION = 1;
     private static final String TABLE_NAME = "department_machinery";
@@ -39,15 +46,15 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_NAME +
                 " (" + COLUMN_ORDINAL_NUMBERS + " NUMERIC, " +
-                COLUMN_INVENTORY_DATE + " NUMERIC, " +
+                COLUMN_INVENTORY_DATE + " TEXT, " +
                 COLUMN_DEPARTMENT_CODE + " TEXT, " +
                 COLUMN_ASSET_CODE + " TEXT, " +
                 COLUMN_DEPARTMENT_ASSET_CODE + " TEXT, " +
                 COLUMN_DEPARTMENT_ASSET_NAME + " TEXT, " +
                 COLUMN_RFID_CODE + " TEXT, " +
                 COLUMN_STATUS + " TEXT, " +
-                COLUMN_DATE_ACCEPTANCE + " NUMERIC, " +
-                COLUMN_DATE_DEPRECIATION + " NUMERIC, " +
+                COLUMN_DATE_ACCEPTANCE + " TEXT, " +
+                COLUMN_DATE_DEPRECIATION + " TEXT, " +
                 COLUMN_TIME_USED + " NUMERIC, " +
                 COLUMN_ORIGINAL_PRICE + " NUMERIC, " +
                 COLUMN_DEPRECIATED_PRICE + " NUMERIC, " +
@@ -63,47 +70,61 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addMachinery(Integer ordinal_numbers,
-                             String inventory_date,
-                             String department_code,
-                             String asset_code,
-                             String department_asset_code,
-                             String department_asset_name,
-                             String RFID_code,
-                             Integer status,
-                             String date_acceptance,
-                             String date_depreciation,
-                             Integer time_used,
-                             double original_price,
-                             double depreciated_price,
-                             String location,
-                             String group_code,
-                             String inventory_department) {
+    public void addMachinery(List<MachineryModel> listMachinery) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(COLUMN_ORDINAL_NUMBERS, ordinal_numbers);
-        cv.put(COLUMN_INVENTORY_DATE, inventory_date);
-        cv.put(COLUMN_DEPARTMENT_CODE, department_code);
-        cv.put(COLUMN_ASSET_CODE, asset_code);
-        cv.put(COLUMN_DEPARTMENT_ASSET_CODE, department_asset_code);
-        cv.put(COLUMN_DEPARTMENT_ASSET_NAME, department_asset_name);
-        cv.put(COLUMN_RFID_CODE, RFID_code);
-        cv.put(COLUMN_STATUS, status);
-        cv.put(COLUMN_DATE_ACCEPTANCE, date_acceptance);
-        cv.put(COLUMN_DATE_DEPRECIATION, date_depreciation);
-        cv.put(COLUMN_TIME_USED, time_used);
-        cv.put(COLUMN_ORIGINAL_PRICE, original_price);
-        cv.put(COLUMN_DEPRECIATED_PRICE, depreciated_price);
-        cv.put(COLUMN_LOCATION, location);
-        cv.put(COLUMN_GROUP_CODE, group_code);
-        cv.put(COLUMN_INVENTORY_DEPARTMENT, inventory_department);
-
-        long result = db.insert(TABLE_NAME, null, cv);
-        if (result == -1) {
-            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Add Successfully", Toast.LENGTH_SHORT).show();
+        db.beginTransaction();
+        try {
+            for (MachineryModel machinery_model : listMachinery) {
+                cv.put(COLUMN_ORDINAL_NUMBERS, machinery_model.getOrdinal_numbers());
+                cv.put(COLUMN_INVENTORY_DATE, machinery_model.getInventory_date().substring(0, 10));
+                cv.put(COLUMN_DEPARTMENT_CODE, machinery_model.getDepartment_code());
+                cv.put(COLUMN_ASSET_CODE, machinery_model.getAsset_code());
+                cv.put(COLUMN_DEPARTMENT_ASSET_CODE, machinery_model.getDepartment_asset_code());
+                cv.put(COLUMN_DEPARTMENT_ASSET_NAME, machinery_model.getDepartment_asset_name());
+                cv.put(COLUMN_RFID_CODE, machinery_model.getRFID_code());
+                cv.put(COLUMN_STATUS, machinery_model.getStatus());
+                cv.put(COLUMN_DATE_ACCEPTANCE, DateFormat.format("dd/MM/yyyy", machinery_model.getDate_acceptance()).toString());
+                cv.put(COLUMN_DATE_DEPRECIATION, DateFormat.format("dd/MM/yyyy", machinery_model.getDate_depreciation()).toString());
+                cv.put(COLUMN_TIME_USED, machinery_model.getTime_used());
+                cv.put(COLUMN_ORIGINAL_PRICE, machinery_model.getOrdinal_numbers());
+                cv.put(COLUMN_DEPRECIATED_PRICE, machinery_model.getDepreciated_price());
+                cv.put(COLUMN_LOCATION, machinery_model.getLocation());
+                cv.put(COLUMN_GROUP_CODE, machinery_model.getGroup_code());
+                cv.put(COLUMN_INVENTORY_DEPARTMENT, machinery_model.getInventory_department());
+                db.insert(TABLE_NAME, null, cv);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
+    }
+
+    public void updateData(String RFID_Code, int max_ordinal_number, int status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_STATUS, status);
+        cv.put(COLUMN_ORDINAL_NUMBERS, max_ordinal_number);
+
+        db.update(TABLE_NAME, cv, "RFID_code=?", new String[]{RFID_Code});
+//        Log.d(TAG, "RFID: " + RFID_Code + " " + max_ordinal_number + " " + status);
+    }
+
+    public void deleteAllData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_NAME);
+    }
+
+    public Cursor getAllDataSQLite() {
+        String query = "SELECT * FROM " + TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, null);
+        }
+
+        return cursor;
     }
 }

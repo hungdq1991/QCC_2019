@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.speedata.uhf.R;
+import com.speedata.uhf.main.helper.MyDatabaseHelper;
 import com.speedata.uhf.main.model.MachineryModel;
 
 import java.util.ArrayList;
@@ -32,11 +33,11 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     private static final int ASSET_FOUND = 1;
     private static final int ASSET_ANOTHER_FACTORY = 2;
 
-    private Context context;
+    private final Context context;
     private List<MachineryModel> inventoryList;
-    private List<MachineryModel> inventoryListFull;
+    private final List<MachineryModel> inventoryListFull;
     private List<MachineryModel> inventoryListFiltered;
-    private ItemClickListener itemClickListener;
+    private final ItemClickListener itemClickListener;
 
     private static final String TAG = "InventoryAdapter";
 
@@ -113,6 +114,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
         int max_ordinal_number = 0;
         String RFID_Code = "";
         String regex_pattern = "5354(.*)454E";
+        MyDatabaseHelper myDB = new MyDatabaseHelper(context);
 
         /**
          * Cut 2 character start and end between HEX code
@@ -131,13 +133,15 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
                 if (row.getAsset_code().toLowerCase().equals( RFID_Code.toLowerCase() )) {
                     if (row.getStatus() == ASSET_NOT_FOUND_YET) {
                         if (row.getDepartment_code().equals( department_code )) {
-                            Log.d( TAG, "updateRecyclerView: " + row.getAsset_code() + " " + row.getStatus() + " " + row.getDepartment_code() + " " + department_code );
-                            inventoryListFull.get( count ).setOrdinal_numbers( max_ordinal_number + 1 );
+                            Log.d(TAG, "updateRecyclerView: " + row.getAsset_code() + " " + row.getStatus() + " " + row.getDepartment_code() + " " + department_code);
+                            myDB.updateData(inventoryListFull.get(count).getRFID_code(), max_ordinal_number, ASSET_FOUND);
+                            inventoryListFull.get(count).setOrdinal_numbers(max_ordinal_number + 1);
                             inventoryListFull.get( count ).setStatus( ASSET_FOUND );
                             return count;
                         } else {
-                            Log.d( TAG, "updateRecyclerView: " + row.getAsset_code() + " " + row.getStatus() + " " + row.getDepartment_code() + " " + department_code );
-                            inventoryListFull.get( count ).setOrdinal_numbers( max_ordinal_number + 1 );
+                            Log.d(TAG, "updateRecyclerView: " + row.getAsset_code() + " " + row.getStatus() + " " + row.getDepartment_code() + " " + department_code);
+                            myDB.updateData(inventoryListFull.get(count).getRFID_code(), max_ordinal_number, ASSET_ANOTHER_FACTORY);
+                            inventoryListFull.get(count).setOrdinal_numbers(max_ordinal_number + 1);
                             inventoryListFull.get( count ).setStatus( ASSET_ANOTHER_FACTORY );
                             return count;
                         }
@@ -191,20 +195,23 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
 
     public class RecyclerViewAdapter extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ImageView mIconStatus;
-        private TextView tv_department_code, tv_asset_code, tv_department_asset_name, tv_ordinal_numbers;
-        private CardView card_item;
-        private ItemClickListener itemClickListener;
+        private final ImageView mIconStatus;
+        private final TextView tv_department_code;
+        private final TextView tv_asset_code;
+        private final TextView tv_department_asset_name;
+        private final TextView tv_ordinal_numbers;
+        private final CardView card_item;
+        private final ItemClickListener itemClickListener;
 
         RecyclerViewAdapter(@NonNull View itemView, ItemClickListener itemClickListener) {
-            super( itemView );
+            super(itemView);
 
-            mIconStatus = itemView.findViewById( R.id.image_icon_status );
-            tv_department_code = itemView.findViewById( R.id.department_code );
-            tv_asset_code = itemView.findViewById( R.id.asset_code );
-            tv_department_asset_name = itemView.findViewById( R.id.department_asset_name );
-            tv_ordinal_numbers = itemView.findViewById( R.id.ordinal_numbers );
-            card_item = itemView.findViewById( R.id.card_item );
+            mIconStatus = itemView.findViewById(R.id.image_icon_status);
+            tv_department_code = itemView.findViewById(R.id.department_code);
+            tv_asset_code = itemView.findViewById(R.id.asset_code);
+            tv_department_asset_name = itemView.findViewById(R.id.department_asset_name);
+            tv_ordinal_numbers = itemView.findViewById(R.id.ordinal_numbers);
+            card_item = itemView.findViewById(R.id.card_item);
 
             this.itemClickListener = itemClickListener;
             card_item.setOnClickListener( this );

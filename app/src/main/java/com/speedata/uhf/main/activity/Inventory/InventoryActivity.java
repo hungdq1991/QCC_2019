@@ -45,6 +45,7 @@ import com.speedata.uhf.adapter.UhfCardAdapter;
 import com.speedata.uhf.adapter.UhfCardBean;
 import com.speedata.uhf.libutils.ToastUtil;
 import com.speedata.uhf.main.activity.History.HistoryActivity;
+import com.speedata.uhf.main.helper.MyDatabaseHelper;
 import com.speedata.uhf.main.model.MachineryModel;
 
 import java.io.BufferedWriter;
@@ -104,7 +105,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     private ImageView mIvSet;
     private ImageView mIvMenu;
     private UhfCardAdapter uhfCardAdapter;
-    private List<UhfCardBean> uhfCardBeanList = new ArrayList<>();
+    private final List<UhfCardBean> uhfCardBeanList = new ArrayList<>();
     private KProgressHUD kProgressHUD;
     private boolean inSearch = false;
     private IUHFService iuhfService;
@@ -130,13 +131,12 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     private String department_name1;
     //Value get from another activity
     private String date_inventory;
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!MyApp.isOpenServer) {
                 String action = intent.getAction();
-                switch (Objects.requireNonNull( action )) {
+                switch (Objects.requireNonNull(action)) {
                     case START_SCAN:
                         //Start UHF scanning
                         if (inSearch) {
@@ -155,15 +155,14 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
             }
         }
     };
-
     // Listener callback reference code
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
+    private final Handler handler = new Handler() {
         //HUNG TEST - Comparator.comparingInt need API 24
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage( msg );
+            super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
                     scant++;
@@ -209,6 +208,8 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
 
         }
     };
+    //
+    private MyDatabaseHelper myDB;
 
     /**
      * Extract time (hour: minute: second) from time (millisecond)
@@ -257,15 +258,17 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         //
         initReceive();
         //
-        inventoryPresenter = new InventoryPresenter( this );
+        inventoryPresenter = new InventoryPresenter(this);
+        //
+        myDB = new MyDatabaseHelper(this);
         //
         getData();
 
         //When swipeRefresh, hide loading, do nothing
-        swipeRefreshLayout.setOnRefreshListener( () -> {
+        swipeRefreshLayout.setOnRefreshListener(() -> {
             //
             hideLoading();
-        } );
+        });
 
         //When click item in recyclerView
         itemClickListener = ((view, position) -> {
@@ -362,14 +365,12 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
             Log.d( TAG, "getData: department" );
             group_code = bundle.getString( "group_code" );
             department_name1 = bundle.getString( "department_name1" );
-            Log.d( TAG, "getData: group code " + group_code + ", department_name1: " + department_name1 );
             //
-            inventoryPresenter.getNew_Inventory_Data( group_code, department_name1 );
+            inventoryPresenter.getNew_Inventory_Data(group_code, department_name1);
         } else if ((bundle = intent.getBundleExtra( "history" )) != null) {
             Log.d( TAG, "getData: history" );
             date_inventory = bundle.getString( "date_inventory" );
             department_name1 = bundle.getString( "department_name1" );
-            Log.d( TAG, "getData: date_inventory " + date_inventory + ", department_name1: " + department_name1 );
             //
             inventoryPresenter.getCurrent_Inventory_Data( date_inventory, department_name1 );
         }
@@ -483,15 +484,16 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
                 }
                 break;
             case R.id.btn_finish:
-                inventoryPresenter.send_Result( inventoryList );
+                inventoryPresenter.send_Result(inventoryList);
+                myDB.deleteAllData();
                 break;
             case R.id.et_search:
-                String[] items = {getResources().getString( R.string.search_dialog_item )};
-                Log.d( "zzc", "changdu " + uhfCardBeanList.size() );
+                String[] items = {getResources().getString(R.string.search_dialog_item)};
+                Log.d("zzc", "changdu " + uhfCardBeanList.size());
                 if (uhfCardBeanList.size() != 0) {
                     items = new String[uhfCardBeanList.size()];
                     for (int i = 0; i < uhfCardBeanList.size(); i++) {
-                        items[i] = uhfCardBeanList.get( i ).getEpc();
+                        items[i] = uhfCardBeanList.get(i).getEpc();
                     }
                 }
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder( this );
@@ -649,22 +651,25 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     }
 
     @Override
-    public void onGetResult(List<MachineryModel> inventoryModels) {
-        inventoryAdapter = new InventoryAdapter( this, inventoryModels, itemClickListener );
+    public void onGetResult(List<MachineryModel> machineryModels) {
+        myDB.addMachinery(machineryModels);
+        Log.d(TAG, "onGetResult: Size machineryModels" + machineryModels.size());
+
+        inventoryAdapter = new InventoryAdapter(this, machineryModels, itemClickListener);
         inventoryAdapter.notifyDataSetChanged();
 
-        recyclerView.setAdapter( inventoryAdapter );
+        recyclerView.setAdapter(inventoryAdapter);
 
         if (inventoryAdapter == null) {
-            Toast.makeText( this, "Is null", Toast.LENGTH_SHORT ).show();
+            Toast.makeText(this, "Is null", Toast.LENGTH_SHORT).show();
         } else {
-            inventoryAdapter.getFilter().filter( department_name1 );
+            inventoryAdapter.getFilter().filter(department_name1);
         }
 
         //Set total of inventoryList
         tagTotal.setText( " / " + inventoryAdapter.getItemCount() );
 
-        inventoryList = inventoryModels;
+        inventoryList = machineryModels;
     }
 
     @Override

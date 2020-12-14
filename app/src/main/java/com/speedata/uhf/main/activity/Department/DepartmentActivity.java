@@ -59,18 +59,6 @@ public class DepartmentActivity extends AppCompatActivity implements DepartmentV
             String inventory_date = LocalDate.now().toString();
 
             departmentPresenter.Check_Inventory_Exists( inventory_date, name1 );
-
-//            if (name1.equals( "IT1" ) || name1.equals( "IT2" )) {
-//                Intent intent = new Intent();
-//                Bundle bundle = new Bundle();
-//                bundle.putString( "group_code", group_code );
-//                bundle.putString( "department_name1", name1 );
-//                intent.putExtras( bundle );
-//                intent.setClass( this, InventoryActivity.class );
-//                startActivity( intent );
-//            } else {
-//                Toast.makeText( DepartmentActivity.this, "Phòng ban chưa nhập dữ liệu kiểm kê!", Toast.LENGTH_SHORT ).show();
-//            }
         });
     }
 
@@ -105,12 +93,13 @@ public class DepartmentActivity extends AppCompatActivity implements DepartmentV
         if (result_code == 200) {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
-            bundle.putString( "group_code", group_code );
-            bundle.putString( "department_name1", name1 );
-            intent.putExtra( "department", bundle );
-            intent.setClass( this, InventoryActivity.class );
-            Toast.makeText( DepartmentActivity.this, group_code + " " + name1, Toast.LENGTH_SHORT ).show();
-            startActivity( intent );
+            bundle.putString("group_code", group_code);
+            bundle.putString("department_name1", name1);
+            intent.putExtra("department", bundle);
+            intent.setClass(this, InventoryActivity.class);
+            //TODO
+//            Toast.makeText( DepartmentActivity.this, group_code + " " + name1, Toast.LENGTH_SHORT ).show();
+            startActivity(intent);
         } else if (result_code == 409) {
             Toast.makeText( DepartmentActivity.this, "Phòng " + name1 + "đã kiểm kê trong ngày", Toast.LENGTH_SHORT ).show();
         } else if (result_code == 404) {

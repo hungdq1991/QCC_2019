@@ -19,7 +19,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class InventoryPresenter {
-    private InventoryView view;
+    private final InventoryView view;
     private static final String TAG = "InventoryPresenter";
 
     public InventoryPresenter(InventoryView view) {
@@ -39,7 +39,6 @@ public class InventoryPresenter {
             public void onResponse(@NonNull Call<List<MachineryModel>> call, @NonNull Response<List<MachineryModel>> response) {
                 view.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d( TAG, "onResponse: get response value from API 'getListMachinery.php'" );
                     view.onGetResult( response.body() );
                 }
             }
@@ -64,8 +63,8 @@ public class InventoryPresenter {
             public void onResponse(@NonNull Call<List<MachineryModel>> call, @NonNull Response<List<MachineryModel>> response) {
                 view.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d( TAG, "onResponse: get response value from API 'getCurrentListInventory.php'" );
-                    view.onGetResult( response.body() );
+                    Log.d(TAG, response.body().iterator().toString());
+                    view.onGetResult(response.body());
                 }
             }
 
@@ -77,17 +76,17 @@ public class InventoryPresenter {
         } );
     }
 
-    void send_Result(List<MachineryModel> inventoryList) {
-        Log.d( TAG, "send_Result: sent result inventory to API 'send_Inventory_Result.php'" );
+    public void send_Result(List<MachineryModel> inventoryList) {
+        Log.d(TAG, "send_Result: sent result inventory to API 'send_Inventory_Result.php'");
         view.showLoading();
 
         Gson gson = new Gson();
-        String json = gson.toJson( inventoryList );
+        String json = gson.toJson(inventoryList);
 
         //Request to server
-        RequestBody body = RequestBody.create( MediaType.parse( "application/json; charset=utf-8" ), json );
-        ApiInterface apiInterface = ApiClient.getApiClient().create( ApiInterface.class );
-        Call<ResponseBody> call = apiInterface.send_Inventory_Result( body );
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<ResponseBody> call = apiInterface.send_Inventory_Result(body);
 
         call.enqueue( new Callback<ResponseBody>() {
             @Override
@@ -104,7 +103,8 @@ public class InventoryPresenter {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                view.hideLoading();
+                view.onErrorLoading(t.getLocalizedMessage());
             }
         } );
     }

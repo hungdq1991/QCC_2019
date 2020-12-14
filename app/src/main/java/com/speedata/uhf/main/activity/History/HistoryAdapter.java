@@ -20,7 +20,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Recycler
     List<ResultInventoryModel> resultModelList;
     ItemClickListener itemClickListener;
 
-    public HistoryAdapter(Context context, List<ResultInventoryModel> resultModels, ItemClickListener itemClickListener) {
+    public HistoryAdapter(Context context,
+                          List<ResultInventoryModel> resultModels,
+                          ItemClickListener itemClickListener) {
         this.context = context;
         this.resultModelList = resultModels;
         this.itemClickListener = itemClickListener;
@@ -29,8 +31,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Recycler
     @NonNull
     @Override
     public RecyclerViewAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from( context ).inflate( R.layout.activity_history_row, parent, false );
-        return new RecyclerViewAdapter( view, itemClickListener );
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_history_row, parent, false);
+        return new RecyclerViewAdapter(view, itemClickListener);
     }
 
     @Override

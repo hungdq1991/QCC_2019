@@ -15,7 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DepartmentPresenter {
-    private DepartmentView view;
+    private final DepartmentView view;
 
     public DepartmentPresenter(DepartmentView view) {
         this.view = view;
@@ -44,13 +44,13 @@ public class DepartmentPresenter {
         } );
     }
 
-    public Boolean Check_Inventory_Exists(String inventory_date, String department_name1) {
+    public void Check_Inventory_Exists(String inventory_date, String department_name1) {
         view.showLoading();
 
         //Request to server
-        ApiInterface apiInterface = ApiClient.getApiClient().create( ApiInterface.class );
-        Call<ResponseBody> call = apiInterface.check_Exists_Inventory( inventory_date, department_name1 );
-        call.enqueue( new Callback<ResponseBody>() {
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<ResponseBody> call = apiInterface.check_Exists_Inventory(inventory_date, department_name1);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 view.hideLoading();
@@ -69,6 +69,5 @@ public class DepartmentPresenter {
                 view.onErrorLoading( t.getLocalizedMessage() );
             }
         } );
-        return false;
     }
 }
