@@ -59,8 +59,64 @@ public class MachineryModel implements Serializable {
         this.ordinal_numbers = ordinal_numbers;
     }
 
+    public void setInventory_date(String inventory_date) {
+        this.inventory_date = inventory_date;
+    }
+
+    public void setDepartment_code(String department_code) {
+        this.department_code = department_code;
+    }
+
+    public void setAsset_code(String asset_code) {
+        this.asset_code = asset_code;
+    }
+
+    public void setDepartment_asset_code(String department_asset_code) {
+        this.department_asset_code = department_asset_code;
+    }
+
+    public void setDepartment_asset_name(String department_asset_name) {
+        this.department_asset_name = department_asset_name;
+    }
+
+    public void setRFID_code(String RFID_code) {
+        this.RFID_code = RFID_code;
+    }
+
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public void setDate_acceptance(Date date_acceptance) {
+        this.date_acceptance = date_acceptance;
+    }
+
+    public void setDate_depreciation(Date date_depreciation) {
+        this.date_depreciation = date_depreciation;
+    }
+
+    public void setTime_used(int time_used) {
+        this.time_used = time_used;
+    }
+
+    public void setOriginal_price(double original_price) {
+        this.original_price = original_price;
+    }
+
+    public void setDepreciated_price(double depreciated_price) {
+        this.depreciated_price = depreciated_price;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setGroup_code(String group_code) {
+        this.group_code = group_code;
+    }
+
+    public void setInventory_department(String inventory_department) {
+        this.inventory_department = inventory_department;
     }
 
     public Integer getOrdinal_numbers() {

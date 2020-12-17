@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -52,6 +50,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -123,7 +122,7 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     private long startCheckingTime;
     private File file;
     private BufferedWriter writer;
-    private int count = 0;
+    private long count = 0;
     private Button btnFinish;
 
     private static final String TAG = "InventoryActivity";
@@ -158,52 +157,44 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
     // Listener callback reference code
     @SuppressLint("HandlerLeak")
     private final Handler handler = new Handler() {
-        //HUNG TEST - Comparator.comparingInt need API 24
-        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case 1:
-                    scant++;
-                    long iop = System.currentTimeMillis();
-                    if (mTBtnSound.isChecked()) {
-                        soundPool.play( soundId, 1, 1, 0, 0, 1 );
-                    }
-                    Log.e( "zzc", "=soundPool.play=====" + (System.currentTimeMillis() - iop) );
-                    SpdInventoryData var1 = (SpdInventoryData) msg.obj;
-                    int j;
-                    //Position EPC in inventoryList
-                    int position_in_list = -1;
-                    for (j = 0; j < uhfCardBeanList.size(); j++) {
-                        if (var1.epc.equals( uhfCardBeanList.get( j ).getEpc() )) {
-                            int v = uhfCardBeanList.get( j ).getValid() + 1;
-                            uhfCardBeanList.get( j ).setValid( v );
-                            uhfCardBeanList.get( j ).setRssi( var1.rssi );
-                            //HUNG TEST - Find epc code in inventoryList
-                            position_in_list = inventoryAdapter.updateRecyclerView( var1.epc, department_name1 );
-                            if (position_in_list != -1) {
-//                                Toast.makeText( InventoryActivity.this,
-//                                        "Tìm thấy tài sản: " + inventoryList.get( position_in_list ).getDepartment_asset_name(), Toast.LENGTH_SHORT ).show();
-                                inventoryAdapter.getFilter().filter( department_name1 );
-                                inventoryAdapter.notifyDataSetChanged();
+            if (msg.what == 1) {
+                scant++;
+                long iop = System.currentTimeMillis();
+                if (mTBtnSound.isChecked()) {
+                    soundPool.play(soundId, 1, 1, 0, 0, 1);
+                }
+                Log.e("zzc", "=soundPool.play=====" + (System.currentTimeMillis() - iop));
+                SpdInventoryData var1 = (SpdInventoryData) msg.obj;
+                int j;
+                //Position EPC in inventoryList
+                int position_in_list = -1;
+                for (j = 0; j < uhfCardBeanList.size(); j++) {
+                    if (var1.epc.equals(uhfCardBeanList.get(j).getEpc())) {
+                        int v = uhfCardBeanList.get(j).getValid() + 1;
+                        uhfCardBeanList.get(j).setValid(v);
+                        uhfCardBeanList.get(j).setRssi(var1.rssi);
+                        //Find epc code in inventoryList
+                        position_in_list = inventoryAdapter.updateRecyclerView(var1.epc, department_name1);
+                        if (position_in_list != -1) {
+                            inventoryAdapter.getFilter().filter(department_name1);
+                            inventoryAdapter.notifyDataSetChanged();
 
-                                count++;
-                            }
-                            break;
+                            count++;
                         }
+                        break;
                     }
-                    if (j == uhfCardBeanList.size()) {
-                        uhfCardBeanList.add( new UhfCardBean( var1.epc, 1, var1.rssi, var1.tid ) );
-                        if (!mTBtnSound.isChecked()) {
-                            soundPool.play( soundId, 1, 1, 0, 0, 1 );
-                        }
+                }
+                if (j == uhfCardBeanList.size()) {
+                    uhfCardBeanList.add(new UhfCardBean(var1.epc, 1, var1.rssi, var1.tid));
+                    if (!mTBtnSound.isChecked()) {
+                        soundPool.play(soundId, 1, 1, 0, 0, 1);
                     }
-                    uhfCardAdapter.notifyDataSetChanged();
-                    updateRateCount();
-                    break;
-                default:
-                    break;
+                }
+                uhfCardAdapter.notifyDataSetChanged();
+                updateRateCount();
             }
 
         }
@@ -262,7 +253,11 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         //
         myDB = new MyDatabaseHelper(this);
         //
-        getData();
+        try {
+            getData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         //When swipeRefresh, hide loading, do nothing
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -350,29 +345,54 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
      * Register Broadcast
      */
     private void initReceive() {
-        Log.d( TAG, "initReceive: register Broadcast." );
+        Log.d(TAG, "initReceive: register Broadcast.");
         IntentFilter filter = new IntentFilter();
-        filter.addAction( START_SCAN );
-        filter.addAction( STOP_SCAN );
-        registerReceiver( receiver, filter );
+        filter.addAction(START_SCAN);
+        filter.addAction(STOP_SCAN);
+        registerReceiver(receiver, filter);
     }
 
-    private void getData() {
-        Log.d( TAG, "getData: get data intent" );
+    private void getData() throws ParseException {
+        Log.d(TAG, "getData: get data intent");
         Intent intent = getIntent();
         Bundle bundle;
-        if ((bundle = intent.getBundleExtra( "department" )) != null) {
-            Log.d( TAG, "getData: department" );
-            group_code = bundle.getString( "group_code" );
-            department_name1 = bundle.getString( "department_name1" );
+        if ((bundle = intent.getBundleExtra("department")) != null) {
+            Log.d(TAG, "getData: department");
+            group_code = bundle.getString("group_code");
+            department_name1 = bundle.getString("department_name1");
             //
             inventoryPresenter.getNew_Inventory_Data(group_code, department_name1);
-        } else if ((bundle = intent.getBundleExtra( "history" )) != null) {
-            Log.d( TAG, "getData: history" );
-            date_inventory = bundle.getString( "date_inventory" );
-            department_name1 = bundle.getString( "department_name1" );
+        } else if ((bundle = intent.getBundleExtra("history")) != null) {
+            Log.d(TAG, "getData: history");
+            date_inventory = bundle.getString("date_inventory");
+            department_name1 = bundle.getString("department_name1");
             //
-            inventoryPresenter.getCurrent_Inventory_Data( date_inventory, department_name1 );
+            inventoryPresenter.getCurrent_Inventory_Data(date_inventory, department_name1);
+            //
+            btnFinish.setEnabled(true);
+        } else if ((bundle = intent.getBundleExtra("SQLite")) != null) {
+            department_name1 = bundle.getString("department_name1");
+
+            inventoryList = inventoryPresenter.getLocalData(this);
+
+            inventoryAdapter = new InventoryAdapter(this, inventoryList, itemClickListener);
+            inventoryAdapter.notifyDataSetChanged();
+
+            recyclerView.setAdapter(inventoryAdapter);
+
+            if (inventoryAdapter == null) {
+                Toast.makeText(this, "Is null", Toast.LENGTH_SHORT).show();
+            } else {
+                inventoryAdapter.getFilter().filter(department_name1);
+            }
+
+            Log.d(TAG, "department name: " + department_name1);
+
+            mLlFind.setVisibility(View.GONE);
+            mLlPause.setVisibility(View.VISIBLE);
+            btnFinish.setEnabled(true);
+
+            updateRateCount();
         }
     }
 
@@ -496,17 +516,20 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
                         items[i] = uhfCardBeanList.get(i).getEpc();
                     }
                 }
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder( this );
-                alertBuilder.setTitle( getResources().getString( R.string.search_dialog_title ) );
-                alertBuilder.setItems( items, new DialogInterface.OnClickListener() {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                //TODO
+//                alertBuilder.setTitle( getResources().getString( R.string.search_dialog_title ) );
+                alertBuilder.setTitle("Chức năng đang phát triển");
+                alertBuilder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (uhfCardBeanList.size() != 0) {
-                            mEtSearch.setText( uhfCardBeanList.get( i ).getEpc() );
+                            //TODO
+                            mEtSearch.setText(uhfCardBeanList.get(i).getEpc());
                         }
                         alertDialog1.dismiss();
                     }
-                } );
+                });
                 alertDialog1 = alertBuilder.create();
                 alertDialog1.show();
                 break;
@@ -567,19 +590,20 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
      * Update display data
      */
     private void updateRateCount() {
-        Log.d( TAG, "==updateRateCount==" );
+        Log.d(TAG, "==updateRateCount==");
         long mlEndTime = System.currentTimeMillis();
 
-        double rate = Math.ceil( (scant * 1.0) * 1000 / (mlEndTime - startCheckingTime) );
+        double rate = Math.ceil((scant * 1.0) * 1000 / (mlEndTime - startCheckingTime));
 
         long totalTimeCount = mlEndTime - startCheckingTime;
 
-        speedTv.setText( String.format( "%s" + getResources().getString( R.string.num ), rate ) );
+        speedTv.setText(String.format("%s" + getResources().getString(R.string.num), rate));
 
-        tagNumTv.setText( String.format( "%s", count ) );
-        tagTotal.setText( " / " + inventoryAdapter.getItemCount() );
+        count = inventoryAdapter.getItemFindCount();
+        tagNumTv.setText(String.format("%s", count));
+        tagTotal.setText(" / " + inventoryAdapter.getItemTotalCount(department_name1));
 
-        totalTime.setText( String.format( getResources().getString( R.string.spend_time ) + "%s", getTimeFromMillisecond( totalTimeCount ) ) );
+        totalTime.setText(String.format(getResources().getString(R.string.spend_time) + "%s", getTimeFromMillisecond(totalTimeCount)));
     }
 
     private void sendUpdateService() {
@@ -666,8 +690,13 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
             inventoryAdapter.getFilter().filter(department_name1);
         }
 
-        //Set total of inventoryList
-        tagTotal.setText( " / " + inventoryAdapter.getItemCount() );
+        mLlFind.setVisibility(View.GONE);
+        mLlPause.setVisibility(View.VISIBLE);
+
+//        //Set total of inventoryList
+//        tagTotal.setText( " / " + inventoryAdapter.getItemCount());
+
+        updateRateCount();
 
         inventoryList = machineryModels;
     }

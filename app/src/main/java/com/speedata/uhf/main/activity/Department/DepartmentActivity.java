@@ -84,9 +84,9 @@ public class DepartmentActivity extends AppCompatActivity implements DepartmentV
     @Override
     /**
      * @result: Kết quả Check
-     *          200 : Check OK, di chuyển qua InventoryActivity.
-     *          409 : Phòng ban đã kiểm kê trong ngày.
-     *          404 : Chưa nhập thông tin máy móc thiết bị cho phòng ban.
+     * 200 : Check OK, di chuyển qua InventoryActivity.
+     * 409 : Phòng ban đã kiểm kê trong ngày.
+     * 404 : Chưa nhập thông tin máy móc thiết bị cho phòng ban.
      */
     public void onGetCheckDepartment(String result) {
         int result_code = Integer.parseInt( result );
@@ -97,8 +97,6 @@ public class DepartmentActivity extends AppCompatActivity implements DepartmentV
             bundle.putString("department_name1", name1);
             intent.putExtra("department", bundle);
             intent.setClass(this, InventoryActivity.class);
-            //TODO
-//            Toast.makeText( DepartmentActivity.this, group_code + " " + name1, Toast.LENGTH_SHORT ).show();
             startActivity(intent);
         } else if (result_code == 409) {
             Toast.makeText( DepartmentActivity.this, "Phòng " + name1 + "đã kiểm kê trong ngày", Toast.LENGTH_SHORT ).show();

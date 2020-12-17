@@ -31,11 +31,11 @@
     <string name="Item_Rssi">RSSI Threshold(dbm)</string>
     <string name="Item_Set_Title">SETTING</string>
     <string name="Set_Return_Btn">Go Back</string>
-    <string name="Status_SetFreqOK">Set Freq Ok</string>
+    <string name="Status_SetFreqOK">Set Freq OK</string>
     <string name="Status_SetFreqFailed">Set Freq Failed</string>
-    <string name="Status_SetOutputLevelOk">Set Output Level Ok</string>
+    <string name="Status_SetOutputLevelOk">Set Output Level OK</string>
     <string name="Status_SetOutputLevelFailed">Set Output Level Failed</string>
-    <string name="Status_SetSensOK">Set Sensitivity Ok</string>
+    <string name="Status_SetSensOK">Set Sensitivity OK</string>
     <string name="Status_SetSensFailed">Set Sensitivity Failed</string>
     <string name="Status_InvalidNumber">Invalid Number or Character</string>
     <string name="Status_OutOfRange">Value is Out of Range</string>
@@ -65,7 +65,7 @@
     <string name="Status_Select_Card_Faild">Select Card Faild</string>
     <string name="Status_Read_Card_Ok">Read OK</string>
     <string name="Status_Read_Card_Faild">Read Error</string>
-    <string name="Status_Write_Card_Ok">Write Ok</string>
+    <string name="Status_Write_Card_Ok">Write OK</string>
     <string name="Status_Write_Card_Faild">Write Faild</string>
     <string name="Status_No_Card_Select">No Card Selected</string>
     <string name="Status_Set_EPC_Error">Set EPC Error</string>
@@ -316,4 +316,5 @@
     <string name="asset_total">10 / 60</string>
     <string name="inventory_of_assets">INVENTORY OF ASSETS</string>
     <string name="takako">TAKAKO VIETNAM CO., LTD</string>
+    <string name="xac_nhan">Xác Nhận</string>
 </resources>

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -35,7 +36,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_LOCATION = "location";
     private static final String COLUMN_GROUP_CODE = "group_code";
     private static final String COLUMN_INVENTORY_DEPARTMENT = "inventory_department";
-    private Context context;
 
 
     public MyDatabaseHelper(@Nullable Context context) {
@@ -45,7 +45,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_NAME +
-                " (" + COLUMN_ORDINAL_NUMBERS + " NUMERIC, " +
+                " (" + COLUMN_ORDINAL_NUMBERS + " INTEGER, " +
                 COLUMN_INVENTORY_DATE + " TEXT, " +
                 COLUMN_DEPARTMENT_CODE + " TEXT, " +
                 COLUMN_ASSET_CODE + " TEXT, " +
@@ -78,7 +78,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         try {
             for (MachineryModel machinery_model : listMachinery) {
                 cv.put(COLUMN_ORDINAL_NUMBERS, machinery_model.getOrdinal_numbers());
-                cv.put(COLUMN_INVENTORY_DATE, machinery_model.getInventory_date().substring(0, 10));
+                Log.d(TAG, "ORDINAL_NUMBERS: " + machinery_model.getOrdinal_numbers());
+                cv.put(COLUMN_INVENTORY_DATE, machinery_model.getInventory_date());
                 cv.put(COLUMN_DEPARTMENT_CODE, machinery_model.getDepartment_code());
                 cv.put(COLUMN_ASSET_CODE, machinery_model.getAsset_code());
                 cv.put(COLUMN_DEPARTMENT_ASSET_CODE, machinery_model.getDepartment_asset_code());
@@ -118,6 +119,20 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllDataSQLite() {
         String query = "SELECT * FROM " + TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, null);
+        }
+
+        return cursor;
+    }
+
+    public Cursor checkExistsDataSQLite() {
+        String query = "SELECT " + COLUMN_INVENTORY_DATE
+                + " ," + COLUMN_INVENTORY_DEPARTMENT
+                + " FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
