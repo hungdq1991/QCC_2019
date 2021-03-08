@@ -8,13 +8,13 @@
     <string name="Write_Btn_T">WRITE</string>
     <string name="Direction_Btn_T">Direction</string>
     <string name="Name_item">Current Card(by EPC):</string>
-    <string name="read_addr">Addr(hex)</string>
+    <string name="read_add">Add(hex)</string>
     <string name="read_count">Count</string>
-    <string name="write_addr">Addr(hex)</string>
+    <string name="write_add">Add(hex)</string>
     <string name="write_count">Count</string>
-    <string name="write_passwd">Password(hex)</string>
+    <string name="write_password">Password(hex)</string>
     <string name="Ok_btn">OK</string>
-    <string name="Cancle_btn">Cancel</string>
+    <string name="Cancel_btn">Cancel</string>
     <string name="Item_Read">Read Card</string>
     <string name="Item_Write">Write Card</string>
     <string name="Item_Search">Search Card</string>
@@ -40,10 +40,10 @@
     <string name="Status_InvalidNumber">Invalid Number or Character</string>
     <string name="Status_OutOfRange">Value is Out of Range</string>
     <string name="Status_Underflow">Value is too small</string>
-    <string name="Status_comerror">Communication Error</string>
+    <string name="Status_com_error">Communication Error</string>
     <string name="TextView_Null"> </string>
     <string name="SetEPC_Btn">Set\nEPC</string>
-    <string name="SetPasswd_Btn">Set Password</string>
+    <string name="SetPassword_Btn">Set Password</string>
     <string name="Lock_Btn">Lock/Unlock</string>
     <string name="Kill_Btn">Kill Tag</string>
     <string name="Item_Tag_EPC">Tag EPC</string>
@@ -143,9 +143,9 @@
     <string name="main_info1">Select card number</string>
     <string name="main_info2">Welcome to UHF App</string>
     <string name="main_info3">Search all then select card</string>
-    <string name="main_rl_info1">/searched</string>
-    <string name="main_rl_info2">time 0.000s</string>
-    <string name="main_rl_info3">0 times/s</string>
+    <string name="main_rl_info1">/ Searched</string>
+    <string name="main_rl_info2"> Time 0.000s</string>
+    <string name="main_rl_info3">0 Times/s</string>
     <string name="card_list">Card list</string>
     <string name="card_list_info">select one for operation</string>
     <string name="voice">Sound </string>
@@ -316,5 +316,11 @@
     <string name="asset_total">10 / 60</string>
     <string name="inventory_of_assets">INVENTORY OF ASSETS</string>
     <string name="takako">TAKAKO VIETNAM CO., LTD</string>
-    <string name="xac_nhan">Xác Nhận</string>
+    <string name="confirmed">Xác Nhận</string>
+    <string name="asset_location">1-IT-000</string>
+    <string name="asset_code">Asset Code</string>
+    <string name="asset_name">Asset Name</string>
+    <string name="ordinal_number">1000</string>
+    <string name="team_id">Team ID</string>
+    <string name="delimiter">-</string>
 </resources>

@@ -67,18 +67,18 @@ public class HistoryActivity extends AppCompatActivity implements HistoryView {
                     message = message + group_code
                             + ".\nPhòng ban: " + cursor.getString(1)
                             + " chưa hoàn thành, đang lưu cục bộ!\nNhấn YES để tiếp tục phiên kiểm kê dở dang.\nNhấn NO để XÓA TOÀN BỘ dữ liệu cục bộ và tiếp tục.";
-                    dialog = new AlertDialog.Builder(this);
-                    dialog.setTitle(R.string.xac_nhan);
-                    dialog.setMessage(message)
-                            .setPositiveButton("Yes", (DialogInterface dialog, int which) -> {
+                    dialog = new AlertDialog.Builder( this );
+                    dialog.setTitle( R.string.confirmed );
+                    dialog.setMessage( message )
+                            .setPositiveButton( "Yes", (DialogInterface dialog, int which) -> {
                                 Intent intent = new Intent();
                                 Bundle bundle = new Bundle();
-                                bundle.putString("department_name1", name_department);
-                                intent.putExtra("SQLite", bundle);
-                                intent.setClass(this, InventoryActivity.class);
-                                startActivity(intent);
-                            })
-                            .setNegativeButton("Cancel", (DialogInterface dialog, int which) -> {
+                                bundle.putString( "department_name1", name_department );
+                                intent.putExtra( "SQLite", bundle );
+                                intent.setClass( this, InventoryActivity.class );
+                                startActivity( intent );
+                            } )
+                            .setNegativeButton( "Cancel", (DialogInterface dialog, int which) -> {
                                 Log.d(TAG, "onClick: Cancel");
                                 dialog.dismiss();
                             })
@@ -104,18 +104,18 @@ public class HistoryActivity extends AppCompatActivity implements HistoryView {
                     message = message + group_code
                             + ".\nPhòng ban: " + cursor.getString(1)
                             + " chưa hoàn thành, đang lưu cục bộ!\nNhấn YES để tiếp tục phiên kiểm kê dở dang.\nNhấn NO để XÓA TOÀN BỘ dữ liệu cục bộ và tạo phiên kiểm kê mới.";
-                    dialog = new AlertDialog.Builder(this);
-                    dialog.setTitle(R.string.xac_nhan);
-                    dialog.setMessage(message)
-                            .setPositiveButton("Yes", (DialogInterface dialog, int which) -> {
+                    dialog = new AlertDialog.Builder( this );
+                    dialog.setTitle( R.string.confirmed );
+                    dialog.setMessage( message )
+                            .setPositiveButton( "Yes", (DialogInterface dialog, int which) -> {
                                 Intent intent = new Intent();
                                 Bundle bundle = new Bundle();
-                                bundle.putString("department_name1", name_department);
-                                intent.putExtra("SQLite", bundle);
-                                intent.setClass(this, InventoryActivity.class);
-                                startActivity(intent);
-                            })
-                            .setNegativeButton("Cancel", (DialogInterface dialog, int which) -> {
+                                bundle.putString( "department_name1", name_department );
+                                intent.putExtra( "SQLite", bundle );
+                                intent.setClass( this, InventoryActivity.class );
+                                startActivity( intent );
+                            } )
+                            .setNegativeButton( "Cancel", (DialogInterface dialog, int which) -> {
                                 Log.d(TAG, "onClick: Cancel");
                                 dialog.dismiss();
                             })

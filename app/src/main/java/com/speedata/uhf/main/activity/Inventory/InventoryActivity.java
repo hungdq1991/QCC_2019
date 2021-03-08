@@ -260,17 +260,19 @@ public class InventoryActivity extends BaseActivity implements View.OnClickListe
         }
 
         //When swipeRefresh, hide loading, do nothing
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            //
+        swipeRefreshLayout.setOnRefreshListener( () -> {
             hideLoading();
-        });
+        } );
 
         //When click item in recyclerView
-        itemClickListener = ((view, position) -> {
-            //TODO
-//            String name = inventoryList.get( position ).getDepartment_name();
-//            Toast.makeText( InventoryActivity.this, String.valueOf( position ), Toast.LENGTH_SHORT ).show();
+        itemClickListener = (new InventoryAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //TODO
+//                inventoryAdapter.deselectItem(position);
+            }
         });
+
     }
 
     public void initView() {

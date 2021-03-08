@@ -3,6 +3,7 @@ package com.speedata.uhf.main.activity.Inventory;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.RecyclerViewAdapter> {
-
     private static final int ASSET_NOT_FOUND_YET = 0;
     private static final int ASSET_FOUND = 1;
     private static final int ASSET_ANOTHER_FACTORY = 2;
@@ -40,6 +40,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     private static final String TAG = "InventoryAdapter";
 
     public InventoryAdapter(Context context, List<MachineryModel> inventoryLists, ItemClickListener itemClickListeners) {
+        Log.d( TAG, "InventoryAdapter: started" );
         this.context = context;
         this.itemClickListener = itemClickListeners;
 
@@ -105,8 +106,9 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     public void onBindViewHolder(@NonNull RecyclerViewAdapter holder, int position) {
         MachineryModel model = inventoryList.get(position);
         holder.tv_department_code.setText(model.getDepartment_code());
-        holder.tv_asset_code.setText(model.getAsset_code());
-        holder.tv_department_asset_name.setText(model.getDepartment_asset_name());
+        holder.tv_asset_code.setText( model.getAsset_code() );
+        holder.tv_asset_location.setText( model.getLocation() );
+        holder.tv_department_asset_name.setText( model.getDepartment_asset_name() );
         holder.tv_ordinal_numbers.setText(String.valueOf(model.getOrdinal_numbers()));
 
         if (model.getStatus() == ASSET_NOT_FOUND_YET) {
@@ -114,25 +116,27 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
             holder.card_item.setBackgroundColor(Color.WHITE);
         } else {
             holder.mIconStatus.setImageResource(R.drawable.icon_ok);
-            if (model.getStatus().equals(ASSET_ANOTHER_FACTORY)) {
+            if (model.getStatus().equals( ASSET_ANOTHER_FACTORY )) {
                 //Set background yellow
-                holder.card_item.setBackgroundColor(Color.rgb(255, 255, 102));
+                holder.card_item.setBackgroundColor( Color.rgb( 255, 255, 102 ) );
             } else {
                 //Set background grey
-                holder.card_item.setBackgroundColor(Color.rgb(191, 191, 191));
+                holder.card_item.setBackgroundColor( Color.rgb( 191, 191, 191 ) );
             }
         }
     }
 
-    //Update status Assets
+    /**
+     * Update Ordinal_numbers, Status
+     **/
     public int updateRecyclerView(String epc, String department_code) {
         int count = 0;
         int max_ordinal_number = 0;
-        String RFID_Code = "";
+        String RFID_Code;
         String regex_pattern = "5354(.*)454E";
-        MyDatabaseHelper myDB = new MyDatabaseHelper(context);
+        MyDatabaseHelper myDB = new MyDatabaseHelper( context );
 
-        /**
+        /*
          * Cut 2 character start and end between HEX code
          * HEX: 5354 => TEXT: "ST"
          * HEX: 454E => TEXT: "EN"
@@ -142,22 +146,26 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
         if (matcher.find()) {
             RFID_Code = hexToString(matcher.group(1));
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                max_ordinal_number = Collections.max(inventoryList,
-                        Comparator.comparingInt(MachineryModel::getOrdinal_numbers)).getOrdinal_numbers();
-            }
-
             for (MachineryModel row : inventoryListFull) {
                 if (row.getAsset_code().toLowerCase().equals(RFID_Code.toLowerCase())) {
                     if (row.getStatus() == ASSET_NOT_FOUND_YET) {
                         if (row.getDepartment_code().equals(department_code)) {
-                            myDB.updateData(inventoryListFull.get(count).getRFID_code(), max_ordinal_number + 1, ASSET_FOUND);
-                            inventoryListFull.get(count).setOrdinal_numbers(max_ordinal_number + 1);
-                            inventoryListFull.get(count).setStatus(ASSET_FOUND);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                max_ordinal_number = Collections.max( inventoryList,
+                                        Comparator.comparingInt( MachineryModel::getOrdinal_numbers ) ).getOrdinal_numbers();
+                            }
+                            myDB.updateData( inventoryListFull.get( count ).getRFID_code(), max_ordinal_number + 1, ASSET_FOUND );
+                            inventoryListFull.get( count ).setOrdinal_numbers( max_ordinal_number + 1 );
+                            inventoryListFull.get( count ).setStatus( ASSET_FOUND );
+
                         } else {
-                            myDB.updateData(inventoryListFull.get(count).getRFID_code(), max_ordinal_number + 1, ASSET_ANOTHER_FACTORY);
-                            inventoryListFull.get(count).setOrdinal_numbers(max_ordinal_number + 1);
-                            inventoryListFull.get(count).setStatus(ASSET_ANOTHER_FACTORY);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                max_ordinal_number = Collections.max( inventoryList,
+                                        Comparator.comparingInt( MachineryModel::getOrdinal_numbers ) ).getOrdinal_numbers();
+                            }
+                            myDB.updateData( inventoryListFull.get( count ).getRFID_code(), max_ordinal_number + 1, ASSET_ANOTHER_FACTORY );
+                            inventoryListFull.get( count ).setOrdinal_numbers( max_ordinal_number + 1 );
+                            inventoryListFull.get( count ).setStatus( ASSET_ANOTHER_FACTORY );
                         }
                         return count;
                     }
@@ -167,6 +175,14 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
         }
         return -1;
     }
+
+//    public void deselectItem(int position) {
+//        MyDatabaseHelper myDB = new MyDatabaseHelper(context);
+//        myDB.updateData(inventoryListFull.get(position).getRFID_code(), 0, ASSET_NOT_FOUND_YET);
+//        inventoryListFull.get(position).setOrdinal_numbers(0);
+//        inventoryListFull.get(position).setStatus(ASSET_NOT_FOUND_YET);
+//        notifyDataSetChanged();
+//    }
 
     public Filter getFilter() {
         return new Filter() {
@@ -210,12 +226,12 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
     }
 
     public class RecyclerViewAdapter extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         private final ImageView mIconStatus;
         private final TextView tv_department_code;
         private final TextView tv_asset_code;
         private final TextView tv_department_asset_name;
         private final TextView tv_ordinal_numbers;
+        private final TextView tv_asset_location;
         private final CardView card_item;
         private final ItemClickListener itemClickListener;
 
@@ -226,11 +242,13 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Recy
             tv_department_code = itemView.findViewById(R.id.department_code);
             tv_asset_code = itemView.findViewById(R.id.asset_code);
             tv_department_asset_name = itemView.findViewById(R.id.department_asset_name);
-            tv_ordinal_numbers = itemView.findViewById(R.id.ordinal_numbers);
-            card_item = itemView.findViewById(R.id.card_item);
+            tv_ordinal_numbers = itemView.findViewById( R.id.ordinal_numbers );
+            tv_asset_location = itemView.findViewById( R.id.asset_location );
+            card_item = itemView.findViewById( R.id.card_item);
 
             this.itemClickListener = itemClickListener;
             card_item.setOnClickListener( this );
+            card_item.setLongClickable( true);
         }
 
         @Override
